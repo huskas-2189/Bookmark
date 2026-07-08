@@ -23,7 +23,7 @@
 		"@iconify-json/mdi": "1.2.3",
 		"@iconify/tailwind4": "1.2.3",
 		"@sveltejs/adapter-node": "5.5.7",
-		"@sveltejs/kit": "2.69.1",
+		"@sveltejs/kit": "2.69.2",
 		"@sveltejs/vite-plugin-svelte": "7.2.0",
 		"@tailwindcss/postcss": "4.3.2",
 		"@tailwindcss/typography": "0.5.20",
