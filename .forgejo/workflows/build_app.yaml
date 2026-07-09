@@ -207,7 +207,7 @@ jobs:
             -o ${CHANGELOG_FILE}
 
       - name: Create Release
-        uses: https://data.forgejo.org/actions/forgejo-release@v2.13.1
+        uses: https://data.forgejo.org/actions/forgejo-release@v2.13.4
         with:
           tag: "${{ env.VERSION }}"
           token: "${{ secrets.BOOKMARK_BOT_TOKEN }}"
