@@ -14,7 +14,7 @@ jobs:
   gitversion:
     name: Gitversion
     runs-on: docker
-    container: gittools/gitversion:6.8.1-alpine.3.23-10.0
+    container: gittools/gitversion:6.8.2-alpine.3.23-10.0
     outputs:
       version: ${{ steps.version.outputs.version }}
       majorMinorPatch: ${{ steps.version.outputs.majorMinorPatch }}
