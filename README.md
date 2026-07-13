@@ -146,6 +146,9 @@ description: My apps are awesome
 auth: basic_auth
 defaultAttrs:
   target: _self
+style:
+  iconSize: medium
+  displayLabel: false
 groups:
   - id: apps
     label: Apps
@@ -192,6 +195,29 @@ Default attributes for app links.
 | Field    | Required | Description                                                                                                                                                                                           |
 | -------- | -------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `target` |       No | Default value for the link `target` attribute ([@see MDN doc for further information](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target)).<br />Default value to "\_self" |
+
+#### style
+
+Global display settings for the dashboard.
+
+| Field          | Required | Description                                                                         |
+| -------------- | -------: | ----------------------------------------------------------------------------------- |
+| `iconSize`     |       No | Size of the app icons. One of `small`, `medium`, `large`. Default value is `large`. |
+| `displayLabel` |       No | Whether the app name is displayed below the icon. Default value is `true`.          |
+
+When `iconSize` is set to `small`, the app name label is always hidden,
+regardless of the `displayLabel` value, to keep the layout compact.
+
+The label is never fully removed from the page: when hidden, it stays
+available to screen readers, so hiding it has no impact on accessibility.
+
+Example:
+
+```yaml
+style:
+  iconSize: small
+  displayLabel: false
+```
 
 #### groups
 

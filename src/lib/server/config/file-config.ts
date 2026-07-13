@@ -52,14 +52,17 @@ export function getFileConfig(): BookmarkConfig {
         description: globalConfig.description ?? '',
         auth: globalConfig.auth ?? 'basic_auth',
         users: globalConfig.users ?? [],
-        defaultAttrs: globalConfig.defaultAttrs ?? {}
+        defaultAttrs: globalConfig.defaultAttrs ?? {},
+        style: {
+            iconSize: 'large',
+            displayLabel: true,
+            ...(globalConfig.style ?? {})
+        }
     };
 }
 
 export function getFileApps(): App[] {
     const globalConfig = getGlobalConfig();
-
-    console.log('GLOBAL_CONFIG_______', globalConfig.apps);
 
     return (globalConfig.apps ?? []).map((app) => ({
         ...app,

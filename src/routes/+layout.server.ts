@@ -10,6 +10,7 @@ export const load: LayoutServerLoad = async () => {
         projectName: projectName,
         projectVersion: projectVersion,
         defaultAttrs: getGlobalConfig().defaultAttrs,
-        username: getAuthProvider().getConnectedUser()?.username
+        username: getAuthProvider().getConnectedUser()?.username,
+        style: getGlobalConfig().style
     };
 };
