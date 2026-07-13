@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import fs from 'node:fs';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 import type { BookmarkConfig } from '$lib/server/models/bookmark-config';
 import type { App } from '$lib/models/app';
 import type { Group } from '$lib/models/group';
@@ -24,7 +24,7 @@ function loadConfig(): BookmarkConfigFile {
     try {
         const file = fs.readFileSync(env.CONFIG_FILE, 'utf8');
 
-        return yaml.load(file, {}) as BookmarkConfigFile;
+        return load(file, {}) as BookmarkConfigFile;
     } catch (error: unknown) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             throw new Error(`File ${env.CONFIG_FILE} doesn't exist.`, { cause: error });
