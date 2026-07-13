@@ -16,6 +16,11 @@ Dockerfile
 .svelte-kit
 eslint.config.js
 
+# CI configs
+.renovate/
+GitVersion.yaml
+renovate.json
+
 # IDE
 .vscode/
 .idea/

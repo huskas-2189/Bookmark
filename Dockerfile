@@ -33,11 +33,11 @@ ENV NODE_ENV=production
 ENV BOOKMARK_ORIGIN=http://localhost:3000
 ENV CONFIG_FILE=/config.yaml
 
-COPY . .
 COPY --from=upstream /app/package.json /app/package-lock.json ./
 RUN npm ci --omit=dev
 
 COPY --from=build /app/build ./build
+COPY ./static ./static
 COPY ./docker/healthcheck.js /healthcheck.js
 
 HEALTHCHECK CMD ["node", "/healthcheck.js"]
