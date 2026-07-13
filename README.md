@@ -50,13 +50,15 @@ The goal is to be the dashboard that does one thing well: showing the right book
 
 Bookmark is built with a lightweight and self-hosting-friendly stack:
 
-| Technology     | Version |
-| -------------- | ------: |
-| **Node.js**    | `24.18` |
-| **Svelte**     |  `5.56` |
-| **SvelteKit**  |  `2.69` |
-| **Vite**       |   `8.1` |
-| **TypeScript** |   `6.0` |
+| Technology     |             Version |
+| -------------- | ------------------: |
+| **Node.js**    | `lts` (Alpine 3.23) |
+| **Svelte**     |            `5.56.4` |
+| **SvelteKit**  |            `2.69.2` |
+| **Vite**       |             `8.1.4` |
+| **TypeScript** |             `6.0.3` |
+
+_This table should be kept updated with renovate._
 
 This stack keeps Bookmark simple to deploy, easy to maintain, and approachable for contributors.
 

@@ -11,5 +11,39 @@
     "prConcurrentLimit": 0,
     "prHourlyLimit": 3,
     "rebaseWhen": "behind-base-branch",
-    "semanticCommits": "enabled"
+    "semanticCommits": "enabled",
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Sync Svelte version in README tech stack table",
+            "managerFilePatterns": ["/^README\\.md$/"],
+            "matchStrings": ["\\*\\*Svelte\\*\\*\\s*\\|\\s*`(?<currentValue>[0-9.]+)`"],
+            "datasourceTemplate": "npm",
+            "depNameTemplate": "svelte"
+        },
+        {
+            "customType": "regex",
+            "description": "Sync SvelteKit version in README tech stack table",
+            "managerFilePatterns": ["/^README\\.md$/"],
+            "matchStrings": ["\\*\\*SvelteKit\\*\\*\\s*\\|\\s*`(?<currentValue>[0-9.]+)`"],
+            "datasourceTemplate": "npm",
+            "depNameTemplate": "@sveltejs/kit"
+        },
+        {
+            "customType": "regex",
+            "description": "Sync Vite version in README tech stack table",
+            "managerFilePatterns": ["/^README\\.md$/"],
+            "matchStrings": ["\\*\\*Vite\\*\\*\\s*\\|\\s*`(?<currentValue>[0-9.]+)`"],
+            "datasourceTemplate": "npm",
+            "depNameTemplate": "vite"
+        },
+        {
+            "customType": "regex",
+            "description": "Sync TypeScript version in README tech stack table",
+            "managerFilePatterns": ["/^README\\.md$/"],
+            "matchStrings": ["\\*\\*TypeScript\\*\\*\\s*\\|\\s*`(?<currentValue>[0-9.]+)`"],
+            "datasourceTemplate": "npm",
+            "depNameTemplate": "typescript"
+        }
+    ]
 }
