@@ -81,6 +81,7 @@ services:
       - '3000:3000'
     volumes:
       - ./config.yaml:/config.yaml:ro
+      - ./icons:/app/static/icons:ro
 ```
 
 Start the service:
@@ -108,7 +109,6 @@ services:
       - traefik
     volumes:
       - ./config.yaml:/config.yaml:ro
-      - ./icons:/app/static/icons:ro
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik'
@@ -154,6 +154,7 @@ apps:
     roles:
       - admin
     group: apps
+    weight: 10
 
 users:
   - username: your_user
@@ -186,9 +187,9 @@ Next integrated provider will be OpenId.
 
 Default attributes for app links.
 
-| Field    | Required | Description                                                                                                                                                                                          |
-| -------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `target` |       No | Default value for the link `target` attribute ([@see MDN doc for further information](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target).<br />Default value to "\_self" |
+| Field    | Required | Description                                                                                                                                                                                           |
+| -------- | -------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target` |       No | Default value for the link `target` attribute ([@see MDN doc for further information](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target)).<br />Default value to "\_self" |
 
 #### groups
 
@@ -212,9 +213,10 @@ Each app requires:
 | `name`   |      Yes | Display name of the app.                                                                                                                                                                             |
 | `url`    |      Yes | URL where the user will be redirected.                                                                                                                                                               |
 | `roles`  |      Yes | List of roles allowed to see this app.                                                                                                                                                               |
-| `icon`   |       No | Custom icon ID. See [Icons](#icons).                                                                                                                                                                 |
+| `icon`   |       No | Custom icon ID. [See Icons](#icons).                                                                                                                                                                 |
 | `target` |       No | value for the link `target` attribute ([@see MDN doc for further information](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#target). Default value to `defaultAttrs.target` |
-| `group`  |       No | Group of the app. [@see #groups](#groups). If `groups` is not defined, this field is useless.                                                                                                        |
+| `group`  |       No | Group of the app. [See Groups](#groups). If `groups` is not defined, this field is useless.                                                                                                          |
+| `weight` |       No | Determines the display order among apps. Lower values are shown first. Apps sharing the same weight are sorted alphabetically by name. Defaults to `100`.                                            |
 
 Example:
 
@@ -231,6 +233,32 @@ apps:
 ```
 
 Apps can also be configured with docker labels. [See labels](#docker-labels)
+
+#### Ordering apps
+
+Apps are sorted by their `weight` field, from lowest to highest.
+This is especially useful when apps are declared through Docker labels,
+where display order otherwise depends on container creation order rather than a defined position.
+
+If two apps share the same weight, they are sorted alphabetically by name.
+Apps without an explicit weight default to `100`, leaving room to insert
+apps before (lower values) or after (higher values) without renumbering everything.
+
+Example:
+
+```yaml
+apps:
+  - id: app_1
+    name: App 1
+    url: https://app1.yourdomain.org
+    roles: [admin]
+    weight: 10
+  - id: app_2
+    name: App 2
+    url: https://app2.yourdomain.org
+    roles: [admin]
+    weight: 20
+```
 
 #### users
 
@@ -274,9 +302,10 @@ Apps can be defined with docker labels.
 | bookmark.app.{id}.name   | true     | Display name of the app.                                    |
 | bookmark.app.{id}.url    | true     | URL where the user will be redirected.                      |
 | bookmark.app.{id}.roles  | true     | List of roles allowed to see this app, separate by a comma. |
-| bookmark.app.{id}.icon   | false    | Custom icon ID. See [Icons](#icons).                        |
+| bookmark.app.{id}.icon   | false    | Custom icon ID. [See Icons](#icons).                        |
 | bookmark.app.{id}.target | false    | Target field.                                               |
 | bookmark.app.{id}.group  | false    | App group.                                                  |
+| bookmark.app.{id}.weight | false    | Display order weight (ascending, default `100`).            |
 
 example:
 
@@ -295,6 +324,7 @@ services:
       - 'bookmark.app.httpd.roles=bookmark_admin'
       - 'bookmark.app.httpd.target=_blank'
       - 'bookmark.app.httpd.group=my_group'
+      - 'bookmark.app.httpd.weight=0'
 ```
 
 ### Hash Passwords

@@ -7,9 +7,12 @@ import {
     BOOKMARK_APP_TARGET,
     BOOKMARK_APP_URL,
     BOOKMARK_APP,
-    BOOKMARK_ENABLE
+    BOOKMARK_ENABLE,
+    BOOKMARK_APP_WEIGHT
 } from '$lib/server/docker-labels/labels-keys';
 import { getContainers } from '$lib/server/docker-labels/docker';
+import { DEFAULT_APP_WEIGHT } from '$lib/models/app';
+import { resolveNumberFromConfig } from '$lib/server/lib/coerce';
 
 export async function getDockerApps(): Promise<App[]> {
     const apps: App[] = [];
@@ -62,7 +65,13 @@ export async function getDockerApps(): Promise<App[]> {
                                 group:
                                     container.Labels[
                                         `${BOOKMARK_APP}.${id}.${BOOKMARK_APP_GROUP}`
-                                    ] ?? null
+                                    ] ?? null,
+                                weight: resolveNumberFromConfig(
+                                    container.Labels[
+                                        `${BOOKMARK_APP}.${id}.${BOOKMARK_APP_WEIGHT}`
+                                    ],
+                                    DEFAULT_APP_WEIGHT
+                                )
                             });
                         });
                     } catch (e: unknown) {

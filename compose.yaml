@@ -37,4 +37,5 @@ services:
       - "bookmark.app.httpd2.name=Httpd 2"
       - "bookmark.app.httpd2.url=http://localhost:8000"
       - "bookmark.app.httpd2.roles=jellyfin_user"
-      - "bookmark.app.httpd2.group=apps"
+      - "bookmark.app.httpd2.group=admin"
+      - "bookmark.app.httpd2.weight=10"
