@@ -108,6 +108,7 @@ services:
       - traefik
     volumes:
       - ./config.yaml:/config.yaml:ro
+      - ./icons:/app/static/icons:ro
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik'
@@ -331,6 +332,37 @@ apps:
     roles:
       - media
 ```
+
+#### Local icons
+
+You can also use your own icons instead of the ones provided by Homarr-labs.
+
+First, mount a volume to the `/app/static/icons` folder inside the container and place your icon files in it:
+
+```yaml
+# compose.yaml
+services:
+  bookmark:
+    container_name: bookmark
+    image: codeberg.org/huskas-2189/bookmark:latest
+    volumes:
+      - ./config.yaml:/config.yaml:ro
+      - ./icons:/app/static/icons:ro
+```
+
+Then, reference the icon in your configuration with the `local:` prefix followed by the file name:
+
+```yaml
+apps:
+  - id: my-media-server
+    name: Jellyfin
+    icon: 'local:mon-icon.jpg'
+    url: https://jellyfin.yourdomain.org
+    roles:
+      - media
+```
+
+In this example, Bookmark will load the icon from `/app/static/icons/mon-icon.jpg`.
 
 ## Roadmap
 
