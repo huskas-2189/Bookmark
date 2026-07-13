@@ -11,8 +11,6 @@
     function getUrl(): string {
         if (icon.startsWith('local:')) {
             return icon.replace('local:', '/icons/');
-            // const iconName = icon.split(':')[1];
-            // return `/icons/${iconName}`;
         }
 
         return `${defaultUrl}${icon}.png`;
@@ -25,6 +23,18 @@
     @reference '#style';
 
     img {
-        @apply h-8 w-auto;
+        @apply w-auto;
+    }
+
+    :global([data-icon-size='small']) img {
+        @apply h-4;
+    }
+
+    :global([data-icon-size='medium']) img {
+        @apply h-6;
+    }
+
+    :global([data-icon-size='large']) img {
+        @apply h-8;
     }
 </style>

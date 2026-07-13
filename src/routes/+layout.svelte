@@ -26,7 +26,7 @@
 </svelte:head>
 
 <Header />
-<main>
+<main data-icon-size={data.style.iconSize}>
     {@render children()}
 </main>
 <Footer />
@@ -36,7 +36,7 @@
 
     main {
         @apply flex items-center justify-center;
-        @apply py-3;
+        @apply py-3 px-6;
         min-height: calc(100vh - calc(2 * var(--header-height)));
     }
 </style>
