@@ -52,10 +52,10 @@ Bookmark is built with a lightweight and self-hosting-friendly stack:
 
 | Technology     | Version |
 | -------------- | ------: |
-| **Node.js**    | `24.14` |
+| **Node.js**    | `24.18` |
 | **Svelte**     |  `5.56` |
-| **SvelteKit**  |  `2.57` |
-| **Vite**       |   `8.0` |
+| **SvelteKit**  |  `2.69` |
+| **Vite**       |   `8.1` |
 | **TypeScript** |   `6.0` |
 
 This stack keeps Bookmark simple to deploy, easy to maintain, and approachable for contributors.
