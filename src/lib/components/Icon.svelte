@@ -1,5 +1,5 @@
 <script lang="ts">
-    const iconUrl = 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/';
+    const defaultUrl = 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/';
     const {
         icon,
         alt
@@ -9,7 +9,13 @@
     } = $props();
 
     function getUrl(): string {
-        return iconUrl + icon + '.png';
+        if (icon.startsWith('local:')) {
+            return icon.replace('local:', '/icons/');
+            // const iconName = icon.split(':')[1];
+            // return `/icons/${iconName}`;
+        }
+
+        return `${defaultUrl}${icon}.png`;
     }
 </script>
 

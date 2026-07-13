@@ -14,7 +14,7 @@ jobs:
   gitversion:
     name: Gitversion
     runs-on: docker
-    container: gittools/gitversion:6.7.0-alpine.3.23-10.0
+    container: gittools/gitversion:6.8.2-alpine.3.23-10.0
     outputs:
       version: ${{ steps.version.outputs.version }}
       majorMinorPatch: ${{ steps.version.outputs.majorMinorPatch }}
@@ -207,7 +207,7 @@ jobs:
             -o ${CHANGELOG_FILE}
 
       - name: Create Release
-        uses: https://data.forgejo.org/actions/forgejo-release@v2.13.1
+        uses: https://data.forgejo.org/actions/forgejo-release@v2.13.4
         with:
           tag: "${{ env.VERSION }}"
           token: "${{ secrets.BOOKMARK_BOT_TOKEN }}"

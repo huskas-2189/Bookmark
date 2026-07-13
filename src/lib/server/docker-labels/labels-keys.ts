@@ -7,3 +7,4 @@ export const BOOKMARK_APP_ROLES = `roles`;
 export const BOOKMARK_APP_ICON = `icon`;
 export const BOOKMARK_APP_TARGET = `target`;
 export const BOOKMARK_APP_GROUP = `group`;
+export const BOOKMARK_APP_WEIGHT = `weight`;

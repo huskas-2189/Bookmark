@@ -1,9 +1,11 @@
 import { env } from '$env/dynamic/private';
 import fs from 'node:fs';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 import type { BookmarkConfig } from '$lib/server/models/bookmark-config';
 import type { App } from '$lib/models/app';
 import type { Group } from '$lib/models/group';
+import { DEFAULT_APP_WEIGHT } from '$lib/models/app';
+import { resolveNumberFromConfig } from '$lib/server/lib/coerce';
 
 export type BookmarkConfigFile = BookmarkConfig & {
     apps: App[];
@@ -24,7 +26,7 @@ function loadConfig(): BookmarkConfigFile {
     try {
         const file = fs.readFileSync(env.CONFIG_FILE, 'utf8');
 
-        return yaml.load(file, {}) as BookmarkConfigFile;
+        return load(file, {}) as BookmarkConfigFile;
     } catch (error: unknown) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             throw new Error(`File ${env.CONFIG_FILE} doesn't exist.`, { cause: error });
@@ -57,7 +59,12 @@ export function getFileConfig(): BookmarkConfig {
 export function getFileApps(): App[] {
     const globalConfig = getGlobalConfig();
 
-    return globalConfig.apps ?? [];
+    console.log('GLOBAL_CONFIG_______', globalConfig.apps);
+
+    return (globalConfig.apps ?? []).map((app) => ({
+        ...app,
+        weight: resolveNumberFromConfig(app.weight, DEFAULT_APP_WEIGHT)
+    }));
 }
 
 export function getFileGroups(): Group[] {
