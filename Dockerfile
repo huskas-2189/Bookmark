@@ -22,7 +22,7 @@ FROM upstream AS deps
 COPY --from=upstream /app/package.json /app/package-lock.json ./
 RUN npm ci --omit=dev
 
-FROM alpine:3.23 AS runner
+FROM alpine:3.24 AS runner
 
 ARG VERSION
 ARG BUILD_DATE
