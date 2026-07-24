@@ -2,13 +2,9 @@ name: Docker Build
 
 on:
   push:
-    branches:
-      - "main"
-      - "develop"
-      - "release/*"
-
-env:
-  IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
+    branches: [main, develop]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   gitversion:
@@ -67,28 +63,20 @@ jobs:
       - name: Is main branch ?
         run: |
           [ "$IS_MAIN" = "true" ] && echo "is main branch" || echo "is not main branch"
+
       - name: Install Deps
         run: |
           apk add --no-cache \
             git \
             ca-certificates \
-            jq
+            jq \
+            nodejs \
+            curl
 
       - name: Set Up Git
         run: |
           git config --global user.name "${FORGEJO_ACTOR}"
           git config --global user.email "bookmark-pipeline@no-reply"
-
-      - name: Setup Version
-        run: |
-          if [ "$IS_MAIN" = "true" ]; then
-            VERSION="${{ needs.gitversion.outputs.version }}"
-          else
-            VERSION="${{ needs.gitversion.outputs.majorMinorPatch }}-${{ needs.gitversion.outputs.preReleaseLabel }}"
-          fi
-
-          echo $VERSION
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Checkout
         run: |
@@ -107,16 +95,16 @@ jobs:
 
           git checkout --detach "$FORGEJO_SHA"
 
-      #      - name: Tag
-      #        run: |
-      #          git tag ${{ needs.gitversion.outputs.version }}
-      #          git push --tags
-
-      - name: Login registry
+      - name: Setup Version
         run: |
-          echo ${{ secrets.REGISTRY_TOKEN }} | docker login ${CODEBERG_URL} \
-            --username "${FORGEJO_ACTOR}" \
-            --password-stdin
+          if [ "$IS_MAIN" = "true" ]; then
+            VERSION="${{ needs.gitversion.outputs.version }}"
+          else
+            VERSION="${{ needs.gitversion.outputs.majorMinorPatch }}-${{ needs.gitversion.outputs.preReleaseLabel }}"
+          fi
+
+          echo $VERSION
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Build Image
         run: |
@@ -125,19 +113,61 @@ jobs:
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             .
 
+      - name: Install Trivy
+        run: |
+          curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Run Trivy vulnerability scanner
+        id: trivy
+        run: |
+          trivy image bookmark_tmp \
+            --format json \
+            --output dependency-results.sbom.json \
+            --exit-code 1 \
+            --ignore-unfixed \
+            --pkg-types os,library \
+            --scanners vuln \
+            --severity CRITICAL,HIGH
+
+      - name: Display Trivy report
+        if: always()
+        run: |
+          trivy convert \
+            --format table \
+            --scanners vuln \
+            --severity CRITICAL,HIGH \
+            dependency-results.sbom.json
+
+      - name: Upload Trivy report
+        uses: https://data.forgejo.org/forgejo/upload-artifact@v5
+        if: always()
+        with:
+          name: trivy-sbom-report
+          path: dependency-results.sbom.json
+
       - name: Tag images
+        if: github.event_name == 'push'
         run: |
           [ "$IS_MAIN" = "true" ] \
             && docker image tag bookmark_tmp ${REPO_URL}:latest
           docker image tag bookmark_tmp ${REPO_URL}:${VERSION}
 
+      - name: Login registry
+        if: github.event_name == 'push'
+        run: |
+          echo ${{ secrets.REGISTRY_TOKEN }} | docker login ${CODEBERG_URL} \
+            --username "${FORGEJO_ACTOR}" \
+            --password-stdin
+
       - name: Push Image to registry
+        if: github.event_name == 'push'
         run: |
           docker image push --all-tags ${REPO_URL}
 
       - name: Clean up
+        if: always()
         run: |
-          docker rmi ${REPO_URL}:${VERSION}
+          [ "$IS_MAIN" = "true" ] && docker rmi ${REPO_URL}:${VERSION}
           [ "$IS_MAIN" = "true" ] && docker rmi ${REPO_URL}:latest
           docker rmi bookmark_tmp
           docker logout ${CODEBERG_URL}
@@ -150,6 +180,7 @@ jobs:
     needs:
       - gitversion
       - build-image
+    if: github.event_name == 'push'
     env:
       GIT_CLIFF_VERSION: "2.13.1"
       CHANGELOG_FILE: "CHANGELOG.md"
