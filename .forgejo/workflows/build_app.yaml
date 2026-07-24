@@ -167,9 +167,7 @@ jobs:
       - name: Clean up
         if: always()
         run: |
-          [ "$IS_MAIN" = "true" ] && docker rmi ${REPO_URL}:${VERSION}
-          [ "$IS_MAIN" = "true" ] && docker rmi ${REPO_URL}:latest
-          docker rmi bookmark_tmp
+          docker images ${REPO_URL} -q | xargs -r docker rmi -f
           docker logout ${CODEBERG_URL}
 
   publish-release:
