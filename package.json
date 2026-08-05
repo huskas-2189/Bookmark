@@ -33,7 +33,7 @@
 		"eslint": "10.8.0",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-svelte": "3.22.0",
-		"globals": "17.8.0",
+		"globals": "17.9.0",
 		"js-yaml": "5.2.2",
 		"postcss": "8.5.25",
 		"postcss-load-config": "6.0.1",
