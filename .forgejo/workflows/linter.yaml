@@ -1,12 +1,14 @@
 name: Linter
 
+run-name: Is this real ?
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   linter:
-    name: Linter
+    name: "Linter ${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || github.ref_name }}"
     runs-on: docker
     container: node:lts-alpine3.23@sha256:244cc2b53f46f9e876304391d17682b0ddae9ac33491f4857e25e35a36ba7995
     steps:

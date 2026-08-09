@@ -8,7 +8,7 @@ on:
 
 jobs:
   gitversion:
-    name: Gitversion
+    name: "Gitversion ${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || github.ref_name }}"
     runs-on: docker
     container: gittools/gitversion:6.8.2-alpine.3.23-10.0
     outputs:
@@ -49,7 +49,8 @@ jobs:
           echo "Version: ${{ steps.version.outputs.version }}"
 
   build-image:
-    name: Build image
+    name: "Build image ${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || github.ref_name }}"
+
     runs-on: docker
     container:
       image: docker:29-cli
@@ -171,7 +172,7 @@ jobs:
           docker logout ${CODEBERG_URL}
 
   publish-release:
-    name: Publish Release
+    name: "Publish Release ${{ github.event_name == 'pull_request' && format('PR #{0} (skipped)', github.event.pull_request.number) || github.ref_name }}"
     runs-on: docker
     container:
       image: node:lts
