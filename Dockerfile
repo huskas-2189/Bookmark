@@ -1,5 +1,5 @@
 # node:lts-alpine3.23
-FROM node:lts-alpine3.23@sha256:595398b0081eacda8e1c4c5b97b76cd1020e4d58a8ebcb4843b9bca1e79e7436 AS upstream
+FROM node:lts-alpine3.23@sha256:244cc2b53f46f9e876304391d17682b0ddae9ac33491f4857e25e35a36ba7995 AS upstream
 
 ARG VERSION
 
@@ -17,7 +17,12 @@ COPY --from=upstream /app/package.json /app/package-lock.json ./
 RUN npm ci
 RUN npm run build
 
-FROM upstream AS runner
+FROM upstream AS deps
+
+COPY --from=upstream /app/package.json /app/package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM alpine:3.24 AS runner
 
 ARG VERSION
 ARG BUILD_DATE
@@ -33,14 +38,26 @@ ENV NODE_ENV=production
 ENV BOOKMARK_ORIGIN=http://localhost:3000
 ENV CONFIG_FILE=/config.yaml
 
-COPY --from=upstream /app/package.json /app/package-lock.json ./
-RUN npm ci --omit=dev
+WORKDIR /app
 
+RUN apk add --no-cache libstdc++ dumb-init \
+    && addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node \
+    && chown node:node .
+
+# Getting Node
+COPY --from=upstream /usr/local/bin/node /usr/local/bin/
+COPY --from=upstream /usr/local/bin/docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+USER node
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/build ./build
+
 COPY ./static ./static
 COPY ./docker/healthcheck.js /healthcheck.js
 
 HEALTHCHECK CMD ["node", "/healthcheck.js"]
 
 EXPOSE 3000
-CMD ["node", "build"]
+CMD ["dumb-init", "node", "build"]
