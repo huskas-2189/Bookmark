@@ -6,6 +6,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+env:
+  IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
+
 jobs:
   gitversion:
     name: "Gitversion ${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || github.ref_name }}"
@@ -50,7 +53,6 @@ jobs:
 
   build-image:
     name: "Build image ${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || github.ref_name }}"
-
     runs-on: docker
     container:
       image: docker:29-cli
@@ -59,7 +61,6 @@ jobs:
     env:
       CODEBERG_URL: "codeberg.org"
       REPO_URL: "codeberg.org/huskas-2189/bookmark"
-      IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
     steps:
       - name: Is main branch ?
         run: |
