@@ -40,7 +40,10 @@ ENV CONFIG_FILE=/config.yaml
 
 WORKDIR /app
 
-RUN apk add --no-cache libstdc++ dumb-init \
+RUN apk add --no-cache \
+    dumb-init \
+    'libcrypto3>=3.5.8-r0' \
+    libstdc++ \
     && addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node \
     && chown node:node .
 

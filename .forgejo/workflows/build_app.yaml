@@ -110,7 +110,7 @@ jobs:
 
       - name: Build Image
         run: |
-          docker build --no-cache -t bookmark_tmp \
+          docker build --no-cache -t ${REPO_URL}:${VERSION} \
             --build-arg VERSION=${VERSION} \
             --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
             .
@@ -122,7 +122,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         id: trivy
         run: |
-          trivy image bookmark_tmp \
+          trivy image ${REPO_URL}:${VERSION} \
             --format json \
             --output dependency-results.sbom.json \
             --exit-code 1 \
@@ -152,7 +152,6 @@ jobs:
         run: |
           [ "$IS_MAIN" = "true" ] \
             && docker image tag bookmark_tmp ${REPO_URL}:latest
-          docker image tag bookmark_tmp ${REPO_URL}:${VERSION}
 
       - name: Login registry
         if: github.event_name == 'push'
