@@ -151,7 +151,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           [ "$IS_MAIN" = "true" ] \
-            && docker image tag bookmark_tmp ${REPO_URL}:latest
+            && docker image tag bookmark_tmp ${REPO_URL}:latest || true
 
       - name: Login registry
         if: github.event_name == 'push'
