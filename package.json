@@ -18,7 +18,7 @@
 		"hash-password": "node ./bin/hash-password.js"
 	},
 	"devDependencies": {
-		"@eslint/compat": "2.1.0",
+		"@eslint/compat": "2.1.1",
 		"@eslint/js": "10.0.1",
 		"@iconify-json/mdi": "1.2.3",
 		"@iconify/tailwind4": "1.2.3",
