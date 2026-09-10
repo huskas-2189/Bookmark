@@ -53,7 +53,7 @@ Bookmark is built with a lightweight and self-hosting-friendly stack:
 | Technology     |             Version |
 | -------------- | ------------------: |
 | **Node.js**    | `lts` (Alpine 3.23) |
-| **Svelte**     |            `5.56.9` |
+| **Svelte**     |            `5.57.0` |
 | **SvelteKit**  |            `2.70.3` |
 | **Vite**       |             `8.2.2` |
 | **TypeScript** |             `6.0.3` |
